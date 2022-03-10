@@ -17,6 +17,14 @@ from rich.table import Table
 #socket.send(hello.encode())
 #rand_numb = socket.recv(1024).decode()
 #print(rand_numb)
+with open("clientDatabase.txt", "r+") as f:
+    results = f.read()
+
+sock = socket()
+server_address = ("localhost", 5550)
+sock.connect(server_address)
+sock.send(results.encode())
+sock.close()
 
 pygame.font.init()
 
@@ -125,9 +133,10 @@ btns = [Button("Vain", 50, 450, (0,0,0)),
 
 
 
+outcome = []
 
 def main():
-
+    
     run = True
     clock = pygame.time.Clock()
     n = Network()
@@ -139,12 +148,17 @@ def main():
 
 
     while run:
+        
+        print(outcome)
         clock.tick(60)
         try:
             game = n.send("get")
         except:
             run = False
             print("Couldn't get gameeee")
+            with open ("clientDatabase.txt", "w") as f:
+                f.write(str(outcome))
+            
             break
 
         if game.bothWent():
@@ -156,20 +170,22 @@ def main():
                 run = False
                 print("Couldn't get game")
                 break
-
+            
+            #outcome = []
+            winner = "player "+ str(player+1)+" is winner"
             font = pygame.font.SysFont("comicsans", 90)
             if (game.winner(random_number_from_server) == 1 and player == 1):
-                 text = font.render("You Won!", 1, (255,0,0))
-                 n.send("1won")
-            elif (game.winner(random_number_from_server) == 0 and player == 0):
                 text = font.render("You Won!", 1, (255,0,0))
-                n.send("0won")
+                winner = "player1 is winner"
+            elif(game.winner(random_number_from_server) == 0 and player == 0):
+                text = font.render("You Won!", 1, (255,0,0))
+                winner = "player2 is winner"
             elif game.winner(random_number_from_server) == -1:
                 text = font.render("Tie Game!", 1, (255,0,0))
-                n.send("tie")
+                winner = "tie"
             else:
                 text = font.render("You Lost...", 1, (255, 0, 0))
-                
+            outcome.append(winner)
 
             win.blit(text, (width/2 - text.get_width()/2, height/2 - text.get_height()/2))
             pygame.display.update()
@@ -178,7 +194,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                
                 pygame.quit()
+               
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()

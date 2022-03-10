@@ -102,15 +102,17 @@ def main() -> None:
     print_available_champs(champions)
     print('\n')
 
+    
     player1 = []
     player2 = []
-
+    
     # Champion selection
     for _ in range(2):
         input_champion('Player 1', 'red', champions, player1, player2)
         input_champion('Player 2', 'blue', champions, player2, player1)
 
     print('\n')
+
 
     # Match
     match = Match(

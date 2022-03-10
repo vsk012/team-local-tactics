@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from random import random, shuffle
+import random as random
 
 _BEATS = {
     (1, 3),
@@ -174,7 +175,7 @@ class Match:
     """
     red_team: Team
     blue_team: Team
-    n_rounds: int = 3
+    n_rounds: int = 1
 
     def play(self):
         """
@@ -200,3 +201,4 @@ class Match:
     @property
     def rounds(self) -> list[dict[str, PairThrow]]:
         return self._rounds
+

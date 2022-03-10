@@ -1,0 +1,1 @@
+['tie', 'tie', 'player 1 is winner']
